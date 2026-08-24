@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>رهیار کنکور | آزمون تعاملی معادله و نامعادله درجه دو</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --bg-0:#05060f;
+    --bg-1:#0a0e27;
+    --bg-2:#0d1230;
+    --card:#0b0f26;
+    --card-border:rgba(255,255,255,0.06);
+    --cyan:#22d3ee;
+    --purple:#a855f7;
+    --pink:#ec4899;
+    --green:#34d399;
+    --red:#fb7185;
+    --text:#eef1fb;
+    --muted:#8b93b8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    background: radial-gradient(1200px 800px at 15% -10%, #17123a 0%, transparent 60%),
+                radial-gradient(1000px 700px at 110% 10%, #0e2a3a 0%, transparent 55%),
+                var(--bg-0);
+    color:var(--text);
+    font-family:'Vazirmatn', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .stars{
+    position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
+    background-image:
+      radial-gradient(1.5px 1.5px at 20px 30px, #ffffff55, transparent),
+      radial-gradient(1.5px 1.5px at 140px 90px, #ffffff33, transparent),
+      radial-gradient(1px 1px at 90px 160px, #ffffff44, transparent),
+      radial-gradient(1.5px 1.5px at 220px 60px, #ffffff33, transparent),
+      radial-gradient(1px 1px at 300px 200px, #ffffff44, transparent);
+    background-repeat:repeat;
+    background-size:340px 260px;
+  }
+  .wrap{
+    position:relative; z-index:1;
+    max-width:640px; margin:0 auto; padding:28px 18px 60px;
+  }
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+  }
+  .brand-badge{
+    width:40px; height:40px; border-radius:12px;
+    background:linear-gradient(135deg, var(--cyan), var(--purple) 55%, var(--pink));
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:18px; color:#0a0e27;
+    box-shadow:0 0 22px rgba(168,85,247,.45);
+  }
+  .brand-name{font-weight:800; font-size:15px; letter-spacing:.2px;}
+  .brand-sub{font-size:11px; color:var(--muted); margin-top:1px;}
+  .pill{
+    font-size:11px; color:var(--muted);
+    border:1px solid var(--card-border);
+    padding:6px 12px; border-radius:999px;
+    background:rgba(255,255,255,.02);
+  }
+
+  .hero{
+    position:relative;
+    border-radius:22px;
+    padding:26px 22px;
+    margin-bottom:22px;
+    background:linear-gradient(180deg, rgba(34,211,238,.08), rgba(168,85,247,.05) 60%, transparent);
+    border:1px solid var(--card-border);
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:-2px;
+    border-radius:22px;
+    padding:1px;
+    background:linear-gradient(120deg, var(--cyan), var(--purple), var(--pink), var(--cyan));
+    background-size:300% 300%;
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: sheen 7s linear infinite;
+    opacity:.55;
+  }
+  @keyframes sheen{ 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+  .hero h1{ font-size:20px; font-weight:800; line-height:1.7; position:relative;}
+  .hero p{ font-size:13px; color:var(--muted); margin-top:8px; line-height:1.9; position:relative;}
+  .hero .tags{ display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; position:relative;}
+  .tag{
+    font-size:11px; padding:5px 10px; border-radius:8px;
+    background:rgba(255,255,255,.04); border:1px solid var(--card-border); color:#c9cff0;
+  }
+
+  .progress-row{ display:flex; align-items:center; gap:10px; margin-bottom:18px;}
+  .progress-track{
+    flex:1; height:8px; border-radius:999px; background:rgba(255,255,255,.06);
+    overflow:hidden; position:relative;
+  }
+  .progress-fill{
+    height:100%; border-radius:999px;
+    background:linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+    width:0%; transition:width .5s cubic-bezier(.4,0,.2,1);
+    box-shadow:0 0 12px rgba(168,85,247,.6);
+  }
+  .progress-label{ font-size:12px; color:var(--muted); white-space:nowrap; font-weight:600;}
+
+  #quiz-area{ position:relative; }
+
+  .qcard{
+    position:relative;
+    border-radius:20px;
+    background:var(--card);
+    border:1px solid var(--card-border);
+    padding:22px 20px 20px;
+    box-shadow:0 20px 60px -20px rgba(0,0,0,.6);
+    animation:fadeIn .45s ease;
+  }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+
+  .qmeta{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .qnum{
+    font-size:12px; font-weight:800; color:var(--cyan);
+    background:rgba(34,211,238,.1); border:1px solid rgba(34,211,238,.25);
+    padding:5px 12px; border-radius:999px;
+  }
+  .qsource{ font-size:11px; color:var(--muted); }
+
+  .qtext{
+    font-size:16.5px; font-weight:700; line-height:2.1; margin-bottom:18px;
+    color:#f5f6ff;
+  }
+  .qtext .math{ font-family:'Vazirmatn', sans-serif; direction:ltr; display:inline-block; unicode-bidi:embed;}
+
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    display:flex; align-items:center; gap:12px;
+    background:rgba(255,255,255,.02);
+    border:1px solid var(--card-border);
+    border-radius:14px;
+    padding:13px 14px;
+    cursor:pointer;
+    font-size:14.5px;
+    transition:all .18s ease;
+    text-align:right;
+    direction:ltr;
+    justify-content:flex-end;
+    flex-direction:row-reverse;
+  }
+  .opt:hover:not(.locked){
+    border-color:rgba(168,85,247,.5);
+    background:rgba(168,85,247,.06);
+    transform:translateX(-2px);
+  }
+  .opt .badge{
+    width:26px; height:26px; border-radius:8px; flex:0 0 auto;
+    background:rgba(255,255,255,.06);
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:800; color:var(--muted);
+  }
+  .opt.correct{
+    border-color:rgba(52,211,153,.6);
+    background:rgba(52,211,153,.1);
+    box-shadow:0 0 18px rgba(52,211,153,.15);
+  }
+  .opt.correct .badge{ background:var(--green); color:#052; }
+  .opt.wrong{
+    border-color:rgba(251,113,133,.6);
+    background:rgba(251,113,133,.08);
+  }
+  .opt.wrong .badge{ background:var(--red); color:#400; }
+  .opt.dim{ opacity:.45; }
+
+  .explain{
+    margin-top:16px; padding:14px 15px; border-radius:14px;
+    background:rgba(255,255,255,.03); border:1px solid var(--card-border);
+    font-size:13px; line-height:2; color:#c9cff0;
+    display:none;
+  }
+  .explain.show{ display:block; animation:fadeIn .35s ease; }
+  .explain b{ color:var(--cyan); }
+
+  .next-btn{
+    margin-top:18px; width:100%; padding:14px; border:none; border-radius:14px;
+    background:linear-gradient(120deg, var(--cyan), var(--purple));
+    color:#0a0e27; font-weight:800; font-size:14.5px; cursor:pointer;
+    display:none; box-shadow:0 10px 30px -8px rgba(168,85,247,.55);
+    font-family:'Vazirmatn', sans-serif;
+    transition:transform .15s ease;
+  }
+  .next-btn:active{ transform:scale(.98); }
+  .next-btn.show{ display:block; }
+
+  /* Result screen */
+  .result{
+    text-align:center; padding:10px 6px 4px;
+  }
+  .ring-wrap{
+    position:relative; width:180px; height:180px; margin:10px auto 20px;
+  }
+  .ring-wrap svg{ transform:rotate(-90deg); }
+  .ring-bg{ fill:none; stroke:rgba(255,255,255,.06); stroke-width:12; }
+  .ring-fg{
+    fill:none; stroke-width:12; stroke-linecap:round;
+    stroke:url(#ringGrad);
+    stroke-dasharray:502.4; stroke-dashoffset:502.4;
+    transition:stroke-dashoffset 1.1s cubic-bezier(.4,0,.2,1);
+  }
+  .ring-center{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+  }
+  .ring-score{ font-size:38px; font-weight:900; }
+  .ring-total{ font-size:12px; color:var(--muted); margin-top:2px;}
+
+  .result h2{ font-size:19px; font-weight:800; margin-bottom:8px; }
+  .result p{ font-size:13.5px; color:var(--muted); line-height:2; margin-bottom:22px; }
+
+  .cta-row{ display:flex; gap:10px; flex-direction:column; }
+  .cta-primary{
+    padding:15px; border-radius:14px; border:none; cursor:pointer;
+    background:linear-gradient(120deg, var(--cyan), var(--purple), var(--pink));
+    color:#0a0e27; font-weight:800; font-size:14.5px;
+    font-family:'Vazirmatn', sans-serif;
+    box-shadow:0 12px 32px -10px rgba(236,72,153,.5);
+  }
+  .cta-secondary{
+    padding:14px; border-radius:14px; cursor:pointer;
+    background:transparent; border:1px solid var(--card-border);
+    color:var(--text); font-weight:700; font-size:13.5px;
+    font-family:'Vazirmatn', sans-serif;
+  }
+
+  footer{
+    margin-top:30px; text-align:center; font-size:11.5px; color:var(--muted);
+    display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;
+  }
+  footer .dot{ width:4px; height:4px; border-radius:999px; background:var(--muted); }
+  footer b{ color:#c9cff0; }
+
+  @media (max-width:380px){
+    .qtext{ font-size:15px; }
+    .opt{ font-size:13.5px; }
+  }
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="brand-badge">R</div>
+      <div>
+        <div class="brand-name">رهیار کنکور</div>
+        <div class="brand-sub">به‌وقت تمرین!</div>
+      </div>
+    </div>
+    <div class="pill" id="topPill">فصل ۴ ریاضی دهم</div>
+  </header>
+
+  <div class="hero" id="heroBox">
+    <h1>آزمون تعاملی معادله و نامعادلهٔ درجه دوم 🧠</h1>
+    <p>۹ سؤال منتخب و باکیفیت از منابع معتبر کنکوری (قلمچی، خیلی‌سبز، گزینه دو، ماز) — هرکدوم رو بزن، همون لحظه جواب و توضیحش رو ببین.</p>
+    <div class="tags">
+      <div class="tag">⏱ حدود ۸ دقیقه</div>
+      <div class="tag">📘 سطح: متوسط تا سخت</div>
+      <div class="tag">✅ با پاسخ تشریحی</div>
+    </div>
+  </div>
+
+  <div class="progress-row">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">۰ / ۹</div>
+  </div>
+
+  <div id="quiz-area"></div>
+
+  <footer>
+    <span>ساخته شده توسط <b>رهیار کنکور</b></span>
+    <span class="dot"></span>
+    <span id="footTelegram">@RahyarKonkor</span>
+  </footer>
+</div>
+
+<svg width="0" height="0">
+  <defs>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="55%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<script>
+// ===================== تنظیمات این آزمون =====================
+// این دو مقدار را برای هر آزمون/روز جدید عوض کنید تا امتیازها قاطی نشوند
+const QUIZ_ID = "math-ch4-day1";                 // شناسهٔ یکتای این آزمون (هر روز/هر ست سوال، یک شناسهٔ جدید)
+const API_URL = "https://YOUR-BACKEND-URL.example.com/api/submit-score"; // آدرس سرور امتیازدهی (bot_server.py)
+// ================================================================
+
+const tg = window.Telegram ? window.Telegram.WebApp : null;
+if (tg) { tg.ready(); tg.expand(); }
+
+const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+function toPersianNum(n){
+  return String(n).split('').map(ch => /[0-9]/.test(ch) ? persianDigits[ch] : ch).join('');
+}
+
+// 9 verified questions sourced from the user's own PDF (فصل ۴ ریاضی دهم - ساده)
+const QUESTIONS = [
+  {
+    source: "قلمچی ۱۴۰۳-۱۴۰۲",
+    text: "اگر خط x = 1 محور تقارن سهمی y = -x² + bx + 2 باشد، بالاترین نقطهٔ این سهمی چه عرضی دارد؟",
+    options: ["-۴", "۳", "-۵", "۲"],
+    correct: 1,
+    explain: "چون محور تقارن سهمی y=-x²+bx+2 برابر x=1 است، از رابطهٔ x = -b/(2a) داریم: -b/(2×(-1)) = 1 ⟹ b = 2. سپس با جای‌گذاری x=1 در معادله: y = -(1)² + 2(1) + 2 = 3. پس بالاترین نقطه، عرض ۳ دارد."
+  },
+  {
+    source: "گزینه دو ۱۴۰۳-۱۴۰۲",
+    text: "اگر محور تقارن سهمی f(x) = mx² - 12x + 4m + 2، خط x = 3 باشد، حداقل مقدار تابع چه عددی است؟",
+    options: ["-۱۰", "-۱۸", "-۸", "-۱۲"],
+    correct: 2,
+    explain: "از رابطهٔ محور تقارن: -b/(2a) = 12/(2m) = 3 ⟹ m = 2. سپس f(3) = 2(9) - 12(3) + 4(2) + 2 = 18 - 36 + 8 + 2 = -8."
+  },
+  {
+    source: "خیلی سبز ۱۴۰۳-۱۴۰۲",
+    text: "اگر α و β ریشه‌های معادلهٔ x² - 5x + 2 = 0 باشند، حاصل (α+2)(β+2) کدام است؟",
+    options: ["۱۲", "۲۴", "۲۰", "۱۶"],
+    correct: 3,
+    explain: "با بسط داریم: (α+2)(β+2) = αβ + 2(α+β) + 4. طبق روابط ریشه‌ها: α+β = 5 و αβ = 2. پس حاصل برابر 2 + 2(5) + 4 = 16."
+  },
+  {
+    source: "خیلی سبز ۱۴۰۳-۱۴۰۲",
+    text: "اگر α و β ریشه‌های معادلهٔ x² - 3x + 1 = 0 باشند، حاصل 1/α² + 1/β² کدام است؟",
+    options: ["۹", "۱۱", "۷", "۵"],
+    correct: 2,
+    explain: "1/α² + 1/β² = (α²+β²)/(αβ)² و α²+β² = (α+β)² - 2αβ = 9 - 2 = 7. چون αβ = 1، مخرج هم برابر ۱ است. پس حاصل کسر برابر ۷."
+  },
+  {
+    source: "ماز ۱۴۰۴-۱۴۰۳",
+    text: "اگر x = -2 ریشهٔ مضاعف معادلهٔ n + mx + 3x² = 0 باشد، مقدار m + n کدام است؟",
+    options: ["۱۸", "۲۴", "۳۶", "۲۰"],
+    correct: 1,
+    explain: "چون x=-2 ریشهٔ مضاعف معادلهٔ 3x² + mx + n = 0 است، معادله را می‌توان به‌صورت 3(x+2)² = 3x² + 12x + 12 نوشت. با مقایسه: m = 12 و n = 12، پس m + n = 24."
+  },
+  {
+    source: "خیلی سبز ۱۴۰۴-۱۴۰۳",
+    text: "اگر نقطهٔ A(1,-1) رأس سهمی y = ax² + bx + 1 باشد، حاصل ab کدام است؟",
+    options: ["-۸", "-۴", "صفر", "۴"],
+    correct: 0,
+    explain: "از محور تقارن: -b/(2a) = 1 ⟹ b = -2a. از عبور سهمی از رأس: a(1)² + b(1) + 1 = -1 ⟹ a + b = -2. با جای‌گذاری b=-2a: a - 2a = -2 ⟹ a = 2 و b = -4. پس ab = 2 × (-4) = -8."
+  },
+  {
+    source: "ماز ۱۴۰۳-۱۴۰۲",
+    text: "اگر f(x) = x² - x - 3 و f(x₁) = f(x₂) = ۰ (با x₁ ≠ x₂) باشد، آنگاه حاصل f(x₁+x₂)·f(x₁x₂) برابر است با:",
+    options: ["-۳۱", "-۲۷", "۳۰", "۲۷"],
+    correct: 1,
+    explain: "چون x₁ و x₂ ریشه‌های x²-x-3=0 هستند: x₁+x₂ = 1 و x₁x₂ = -3. پس f(1) = 1-1-3 = -3 و f(-3) = 9+3-3 = 9. حاصل‌ضرب: (-3)×9 = -27."
+  },
+  {
+    source: "قلمچی ۱۴۰۳-۱۴۰۲",
+    text: "تعداد جواب‌های معادلهٔ ||x+1|+3| = 4 کدام است؟",
+    options: ["۱", "۲", "۳", "صفر"],
+    correct: 1,
+    explain: "چون |x+1|+3 همیشه مثبت است (حداقل ۳)، قدرمطلق بیرونی حذف می‌شود: |x+1|+3 = 4 ⟹ |x+1| = 1 ⟹ x = 0 یا x = -2. پس معادله دو جواب دارد."
+  },
+  {
+    source: "خیلی سبز ۱۴۰۴-۱۴۰۳",
+    text: "نمودار سهمی y = ax² + bx + c از نقاط (-1,2)، (1,4) و (0,1) عبور می‌کند. مقدار b کدام است؟",
+    options: ["۲", "۱", "-۱", "-۲"],
+    correct: 1,
+    explain: "از نقطهٔ (0,1): c = 1. از نقطهٔ (1,4): a+b+c=4 ⟹ a+b=3. از نقطهٔ (-1,2): a-b+c=2 ⟹ a-b=1. با جمع دو رابطه: 2a=4 ⟹ a=2، سپس b = 3-2 = 1."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+const quizArea = document.getElementById('quiz-area');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+const heroBox = document.getElementById('heroBox');
+
+function updateProgress(){
+  const pct = (current / QUESTIONS.length) * 100;
+  progressFill.style.width = pct + '%';
+  progressLabel.textContent = toPersianNum(current) + ' / ' + toPersianNum(QUESTIONS.length);
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = QUESTIONS[current];
+  updateProgress();
+
+  const optionLabels = ['۱','۲','۳','۴'];
+  const optsHtml = q.options.map((opt, idx) => `
+    <div class="opt" data-idx="${idx}" onclick="selectOption(${idx})">
+      <span>${opt}</span>
+      <span class="badge">${optionLabels[idx]}</span>
+    </div>
+  `).join('');
+
+  quizArea.innerHTML = `
+    <div class="qcard">
+      <div class="qmeta">
+        <div class="qnum">سؤال ${toPersianNum(current+1)} از ${toPersianNum(QUESTIONS.length)}</div>
+        <div class="qsource">${q.source}</div>
+      </div>
+      <div class="qtext">${q.text}</div>
+      <div class="options">${optsHtml}</div>
+      <div class="explain" id="explainBox"><b>توضیح:</b> ${q.explain}</div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
+        ${current === QUESTIONS.length - 1 ? 'مشاهدهٔ نتیجه 🎯' : 'سؤال بعدی ←'}
+      </button>
+    </div>
+  `;
+}
+
+function selectOption(idx){
+  if(answered) return;
+  answered = true;
+  const q = QUESTIONS[current];
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach((el, i) => {
+    el.classList.add('locked');
+    if(i === q.correct){ el.classList.add('correct'); }
+    else if(i === idx){ el.classList.add('wrong'); }
+    else { el.classList.add('dim'); }
+  });
+  if(idx === q.correct) score++;
+  document.getElementById('explainBox').classList.add('show');
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function nextQuestion(){
+  current++;
+  if(current < QUESTIONS.length){
+    renderQuestion();
+  } else {
+    renderResult();
+  }
+}
+
+function renderResult(){
+  progressFill.style.width = '100%';
+  progressLabel.textContent = toPersianNum(QUESTIONS.length) + ' / ' + toPersianNum(QUESTIONS.length);
+
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  const circumference = 502.4;
+  const offset = circumference - (circumference * pct / 100);
+
+  let msg = '';
+  if(pct >= 85) msg = 'عالی بود! رتبه‌برتری‌ات معلومه 🔥';
+  else if(pct >= 60) msg = 'خیلی خوب، فقط چندتا نکته مونده جا بیفته 💪';
+  else msg = 'شروع خوبیه، این فصل رو یه دور دیگه با جزوهٔ کامل مرور کن 📘';
+
+  quizArea.innerHTML = `
+    <div class="qcard result">
+      <div class="ring-wrap">
+        <svg width="180" height="180">
+          <circle class="ring-bg" cx="90" cy="90" r="80"></circle>
+          <circle class="ring-fg" id="ringFg" cx="90" cy="90" r="80" stroke-dashoffset="${circumference}"></circle>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-score">${toPersianNum(score)}/${toPersianNum(QUESTIONS.length)}</div>
+          <div class="ring-total">${toPersianNum(pct)}٪ پاسخ درست</div>
+        </div>
+      </div>
+      <h2>${msg}</h2>
+      <p>این فقط ۹ سؤال از بانک کامل بود. جزوه و بقیهٔ سؤالات باکیفیت این فصل رو تو کانال داری — می‌تونی دوباره تمرین کنی یا بری سراغ فصل بعد.</p>
+      <div id="submitStatus" style="font-size:12.5px; color:var(--muted); margin-bottom:14px;">در حال ثبت امتیاز...</div>
+      <div class="cta-row">
+        <button class="cta-primary" onclick="restartQuiz()">تمرین دوباره 🔁</button>
+      </div>
+    </div>
+  `;
+
+  requestAnimationFrame(() => {
+    document.getElementById('ringFg').style.strokeDashoffset = offset;
+  });
+
+  submitScoreToServer(score);
+}
+
+async function submitScoreToServer(correctCount){
+  const statusEl = document.getElementById('submitStatus');
+  if(!tg || !tg.initData){
+    if(statusEl) statusEl.textContent = "این صفحه باید از داخل ربات تلگرام باز بشه تا امتیاز ثبت بشه.";
+    return;
+  }
+  try{
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        initData: tg.initData,
+        quizId: QUIZ_ID,
+        correctCount: correctCount
+      })
+    });
+    const data = await res.json();
+    if(data.ok){
+      if(statusEl) statusEl.textContent = `✅ ${toPersianNum(data.pointsAwarded)} امتیاز برات ثبت شد!`;
+    } else if(data.error === 'already_submitted'){
+      if(statusEl) statusEl.textContent = "این آزمون رو قبلاً ثبت کرده بودی — امتیازش قبلاً اضافه شده.";
+    } else {
+      if(statusEl) statusEl.textContent = "مشکلی تو ثبت امتیاز پیش اومد، دوباره امتحان کن.";
+    }
+  } catch(e){
+    if(statusEl) statusEl.textContent = "اتصال به سرور برقرار نشد.";
+  }
+}
+
+function restartQuiz(){
+  current = 0;
+  score = 0;
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
