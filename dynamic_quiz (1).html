@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>رهیار کنکور | آزمون</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --bg-0:#05060f; --card:#0b0f26; --card-border:rgba(255,255,255,0.06);
+    --cyan:#22d3ee; --purple:#a855f7; --pink:#ec4899;
+    --green:#34d399; --red:#fb7185; --text:#eef1fb; --muted:#8b93b8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    background: radial-gradient(1200px 800px at 15% -10%, #17123a 0%, transparent 60%),
+                radial-gradient(1000px 700px at 110% 10%, #0e2a3a 0%, transparent 55%), var(--bg-0);
+    color:var(--text); font-family:'Vazirmatn', sans-serif; min-height:100vh;
+  }
+  .wrap{ max-width:640px; margin:0 auto; padding:24px 16px 50px; }
+  header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-badge{
+    width:38px; height:38px; border-radius:11px;
+    background:linear-gradient(135deg, var(--cyan), var(--purple) 55%, var(--pink));
+    display:flex; align-items:center; justify-content:center; font-weight:900; font-size:17px; color:#0a0e27;
+    box-shadow:0 0 20px rgba(168,85,247,.45);
+  }
+  .brand-name{ font-weight:800; font-size:14.5px; }
+  .brand-sub{ font-size:10.5px; color:var(--muted); }
+  .pill{ font-size:11px; color:var(--muted); border:1px solid var(--card-border); padding:6px 11px; border-radius:999px; }
+
+  .progress-track{ height:7px; border-radius:999px; background:rgba(255,255,255,.06); overflow:hidden; margin-bottom:18px; }
+  .progress-fill{
+    height:100%; border-radius:999px; width:0%;
+    background:linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+    transition:width .5s ease; box-shadow:0 0 10px rgba(168,85,247,.55);
+  }
+
+  .qcard{
+    border-radius:20px; background:var(--card); border:1px solid var(--card-border);
+    padding:20px 18px 18px; box-shadow:0 20px 60px -20px rgba(0,0,0,.6); animation:fadeIn .4s ease;
+  }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)} }
+  .qimg{ width:100%; border-radius:14px; margin-bottom:14px; display:block; background:#000; }
+  .qtext{ font-size:16px; font-weight:700; line-height:2; margin-bottom:16px; }
+  .options{ display:flex; flex-direction:column; gap:9px; }
+  .opt{
+    display:flex; align-items:center; gap:11px; background:rgba(255,255,255,.02);
+    border:1px solid var(--card-border); border-radius:13px; padding:12px 13px; cursor:pointer;
+    font-size:14px; transition:all .15s ease; direction:ltr; justify-content:flex-end; flex-direction:row-reverse;
+  }
+  .opt:hover:not(.locked){ border-color:rgba(168,85,247,.5); background:rgba(168,85,247,.06); }
+  .opt .badge{
+    width:24px; height:24px; border-radius:7px; flex:0 0 auto; background:rgba(255,255,255,.06);
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:var(--muted);
+  }
+  .opt.correct{ border-color:rgba(52,211,153,.6); background:rgba(52,211,153,.1); }
+  .opt.correct .badge{ background:var(--green); color:#052; }
+  .opt.wrong{ border-color:rgba(251,113,133,.6); background:rgba(251,113,133,.08); }
+  .opt.wrong .badge{ background:var(--red); color:#400; }
+  .opt.dim{ opacity:.4; }
+
+  .explain{
+    margin-top:14px; padding:13px 14px; border-radius:13px; background:rgba(255,255,255,.03);
+    border:1px solid var(--card-border); font-size:12.5px; line-height:1.9; color:#c9cff0; display:none;
+  }
+  .explain.show{ display:block; animation:fadeIn .3s ease; }
+
+  .next-btn{
+    margin-top:16px; width:100%; padding:13px; border:none; border-radius:13px;
+    background:linear-gradient(120deg, var(--cyan), var(--purple)); color:#0a0e27; font-weight:800;
+    font-size:14px; cursor:pointer; display:none; font-family:'Vazirmatn', sans-serif;
+    box-shadow:0 10px 28px -8px rgba(168,85,247,.55);
+  }
+  .next-btn.show{ display:block; }
+
+  .center-msg{ text-align:center; padding:40px 10px; color:var(--muted); font-size:14px; line-height:2; }
+  .result{ text-align:center; }
+  .result h2{ font-size:19px; font-weight:800; margin:14px 0 8px; }
+  .result p{ font-size:13px; color:var(--muted); line-height:1.9; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="brand-badge">R</div>
+      <div>
+        <div class="brand-name">رهیار کنکور</div>
+        <div class="brand-sub" id="setLabel">در حال بارگذاری...</div>
+      </div>
+    </div>
+    <div class="pill" id="topPill">—</div>
+  </header>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div id="quiz-area"><div class="center-msg">در حال بارگذاری سؤالات... ⏳</div></div>
+</div>
+
+<script>
+// ===================== تنظیمات =====================
+const API_BASE_URL = "https://YOUR-BACKEND-URL.example.com";  // همون آدرس سرور ربات (bot_server.py)
+// =====================================================
+
+const tg = window.Telegram ? window.Telegram.WebApp : null;
+if (tg) { tg.ready(); tg.expand(); }
+
+const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+function toPersianNum(n){ return String(n).split('').map(ch => /[0-9]/.test(ch) ? persianDigits[ch] : ch).join(''); }
+
+const params = new URLSearchParams(window.location.search);
+const quizSet = params.get('set') || 'nightly_' + new Date().toISOString().slice(0,10);
+document.getElementById('setLabel').textContent = quizSet;
+
+let questions = [];
+let current = 0;
+let correctCount = 0;
+
+const quizArea = document.getElementById('quiz-area');
+const progressFill = document.getElementById('progressFill');
+const topPill = document.getElementById('topPill');
+
+async function loadQuestions(){
+  try{
+    const initData = tg ? tg.initData : '';
+    const url = `${API_BASE_URL}/api/questions/${encodeURIComponent(quizSet)}?initData=${encodeURIComponent(initData)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if(!data.ok || !data.questions || data.questions.length === 0){
+      quizArea.innerHTML = `<div class="center-msg">🌙 فعلاً سؤالی برای این مجموعه ثبت نشده.<br>بعداً دوباره سر بزن!</div>`;
+      return;
+    }
+    questions = data.questions;
+    topPill.textContent = `${toPersianNum(questions.length)} سؤال`;
+    // اگه بعضی سؤالا قبلاً جواب داده شدن، شمارشش کن
+    questions.forEach(q => { if(q.answered && q.answered.isCorrect) correctCount++; });
+    // برو سراغ اولین سؤالی که هنوز جواب داده نشده
+    current = questions.findIndex(q => !q.answered);
+    if(current === -1){ renderAllDone(); return; }
+    renderQuestion();
+  } catch(e){
+    quizArea.innerHTML = `<div class="center-msg">مشکلی تو اتصال به سرور پیش اومد 😕<br>دوباره امتحان کن.</div>`;
+  }
+}
+
+function updateProgress(){
+  const answeredCount = questions.filter(q => q.answered).length;
+  const pct = questions.length ? (answeredCount / questions.length) * 100 : 0;
+  progressFill.style.width = pct + '%';
+}
+
+function letterLabel(l){ return {a:'الف', b:'ب', c:'ج', d:'د'}[l] || l; }
+
+function renderQuestion(){
+  const q = questions[current];
+  updateProgress();
+
+  const optionsHtml = Object.entries(q.options).map(([letter, text]) => `
+    <div class="opt" data-letter="${letter}" onclick="selectOption('${letter}')">
+      <span>${text}</span>
+      <span class="badge">${letterLabel(letter)}</span>
+    </div>
+  `).join('');
+
+  const imgHtml = q.hasPhoto ? `<img class="qimg" src="${API_BASE_URL}/api/photo/${q.id}" alt="سؤال">` : '';
+  const textHtml = q.questionText ? `<div class="qtext">${q.questionText}</div>` : '';
+
+  quizArea.innerHTML = `
+    <div class="qcard">
+      ${imgHtml}
+      ${textHtml}
+      <div class="options" id="optionsBox">${optionsHtml}</div>
+      <div class="explain" id="explainBox"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">سؤال بعدی ←</button>
+    </div>
+  `;
+
+  // اگه از قبل جواب داده شده (کاربر برگشته به این صفحه)، همون لحظه نتیجه رو نشون بده
+  if(q.answered){
+    revealAnswer(q.answered.selectedOption, q.correctOption, q.explanation, q.answered.isCorrect, false);
+  }
+}
+
+async function selectOption(letter){
+  const optionsBox = document.getElementById('optionsBox');
+  if(optionsBox.classList.contains('locked')) return;
+  optionsBox.classList.add('locked');
+
+  const q = questions[current];
+  try{
+    const res = await fetch(`${API_BASE_URL}/api/answer-question`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        initData: tg ? tg.initData : '',
+        questionId: q.id,
+        selectedOption: letter,
+      })
+    });
+    const data = await res.json();
+    if(!data.ok){
+      if(data.error === 'not_member'){
+        document.getElementById('explainBox').innerHTML = '⚠️ برای ثبت جواب باید عضو کانال باشی.';
+        document.getElementById('explainBox').classList.add('show');
+      }
+      return;
+    }
+    q.answered = { selectedOption: letter, isCorrect: data.isCorrect };
+    q.correctOption = data.correctOption;
+    q.explanation = data.explanation;
+    if(data.isCorrect) correctCount++;
+    revealAnswer(letter, data.correctOption, data.explanation, data.isCorrect, true);
+  } catch(e){
+    optionsBox.classList.remove('locked');
+  }
+}
+
+function revealAnswer(selectedLetter, correctLetter, explanation, isCorrect, showNextBtn){
+  document.querySelectorAll('.opt').forEach(el => {
+    const letter = el.dataset.letter;
+    el.classList.add('locked');
+    if(letter === correctLetter) el.classList.add('correct');
+    else if(letter === selectedLetter) el.classList.add('wrong');
+    else el.classList.add('dim');
+  });
+  const explainBox = document.getElementById('explainBox');
+  let html = isCorrect ? '✅ درسته!' : '❌ جواب درست بود: ' + letterLabel(correctLetter);
+  if(explanation) html += `<br><br>💡 ${explanation}`;
+  explainBox.innerHTML = html;
+  explainBox.classList.add('show');
+  if(showNextBtn) document.getElementById('nextBtn').classList.add('show');
+  updateProgress();
+}
+
+function nextQuestion(){
+  const nextIdx = questions.findIndex((q, i) => i > current && !q.answered);
+  if(nextIdx === -1){ renderAllDone(); return; }
+  current = nextIdx;
+  renderQuestion();
+}
+
+function renderAllDone(){
+  updateProgress();
+  const total = questions.length;
+  const pct = total ? Math.round((correctCount/total)*100) : 0;
+  let msg = pct >= 85 ? 'عالی بود! 🔥' : pct >= 60 ? 'خیلی خوب بود 💪' : 'شروع خوبیه، ادامه بده 📘';
+  quizArea.innerHTML = `
+    <div class="qcard result">
+      <div style="font-size:40px;">🎉</div>
+      <h2>${msg}</h2>
+      <p>${toPersianNum(correctCount)} از ${toPersianNum(total)} سؤال درست<br>هر سؤال درست ۵ امتیاز داشت.</p>
+    </div>
+  `;
+}
+
+loadQuestions();
+</script>
+</body>
+</html>
