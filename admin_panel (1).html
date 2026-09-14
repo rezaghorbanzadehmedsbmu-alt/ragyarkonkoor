@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>پنل افزودن سؤال — رهیار کنکور</title>
+
+<!-- فونت -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+
+<!-- MathJax برای رندر فرمول‌ها در پیش‌نمایش -->
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<style>
+  :root {
+    --bg: #0b0e1a;
+    --panel: #10152a;
+    --panel-2: #141a35;
+    --text: #e7e9f5;
+    --muted: #8b90ab;
+    --cyan: #22d3ee;
+    --purple: #a855f7;
+    --pink: #ec4899;
+    --danger: #f87171;
+    --success: #34d399;
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(circle at 20% -10%, #1a2140 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: 'Vazirmatn', sans-serif;
+    min-height: 100vh;
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  header h1 {
+    font-size: 1.6rem;
+    margin: 0 0 6px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  header p { color: var(--muted); margin: 0; font-size: 0.9rem; }
+
+  .neon-border {
+    position: relative;
+    border-radius: var(--radius);
+    padding: 1px;
+    background: linear-gradient(135deg, var(--cyan), var(--purple), var(--pink));
+  }
+
+  .neon-inner {
+    background: var(--panel);
+    border-radius: calc(var(--radius) - 1px);
+    padding: 20px;
+  }
+
+  .login-box {
+    max-width: 420px;
+    margin: 60px auto;
+  }
+
+  .login-box input {
+    width: 100%;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 14px 0 6px;
+  }
+
+  label:first-child { margin-top: 0; }
+
+  input[type="text"],
+  input[type="password"],
+  textarea,
+  select {
+    width: 100%;
+    background: var(--panel-2);
+    border: 1px solid #2a3155;
+    border-radius: 10px;
+    color: var(--text);
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 0.92rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--cyan);
+  }
+
+  textarea { resize: vertical; min-height: 70px; }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 10px;
+    align-items: center;
+  }
+
+  .option-row {
+    display: contents;
+  }
+
+  .option-row .radio-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .photo-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 6px;
+  }
+
+  .photo-preview {
+    width: 90px;
+    height: 90px;
+    border-radius: 10px;
+    background: var(--panel-2);
+    border: 1px dashed #3a4270;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 0.75rem;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    padding: 11px 18px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    color: #0b0e1a;
+    font-weight: 700;
+    width: 100%;
+    margin-top: 18px;
+  }
+
+  .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid #3a4270;
+    color: var(--text);
+  }
+
+  .btn-small { padding: 6px 12px; font-size: 0.8rem; }
+
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    display: none;
+  }
+
+  .feedback.show { display: block; }
+
+  .feedback.ok {
+    background: rgba(52, 211, 153, 0.12);
+    border: 1px solid rgba(52, 211, 153, 0.4);
+    color: var(--success);
+  }
+
+  .feedback.err {
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.4);
+    color: var(--danger);
+  }
+
+  /* --- پیش‌نمایش --- */
+  .preview-card {
+    background: var(--panel-2);
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 240px;
+  }
+
+  .preview-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .preview-question-text {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+    line-height: 1.9;
+  }
+
+  .preview-photo {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    display: none;
+  }
+
+  .preview-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .preview-option {
+    padding: 9px 12px;
+    border-radius: 8px;
+    background: #1a2140;
+    border: 1px solid #2a3155;
+    font-size: 0.9rem;
+  }
+
+  .preview-option.correct {
+    border-color: var(--success);
+    background: rgba(52, 211, 153, 0.1);
+  }
+
+  .preview-explanation {
+    font-size: 0.85rem;
+    color: var(--muted);
+    border-top: 1px solid #2a3155;
+    padding-top: 10px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+  }
+
+  .preview-meta {
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .sticky-submit {
+    position: sticky;
+    bottom: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>پنل افزودن سؤال — رهیار کنکور</h1>
+    <p>افزودن سریع سؤالات چهارگزینه با پیش‌نمایش زنده</p>
+  </header>
+
+  <!-- صفحه‌ی ورود توکن -->
+  <div id="loginView" class="neon-border login-box">
+    <div class="neon-inner">
+      <label for="tokenInput">توکن ادمین</label>
+      <input type="password" id="tokenInput" placeholder="توکن رو اینجا وارد کن" />
+      <button class="btn-primary" id="loginBtn" style="margin-top:14px;">ورود</button>
+      <div id="loginFeedback" class="feedback"></div>
+    </div>
+  </div>
+
+  <!-- صفحه‌ی اصلی فرم -->
+  <div id="mainView" style="display:none;">
+    <div class="top-bar">
+      <span id="serverLabel">متصل به API</span>
+      <button class="btn-ghost btn-small" id="logoutBtn">خروج / تغییر توکن</button>
+    </div>
+
+    <div class="grid">
+      <!-- ستون فرم -->
+      <div class="neon-border">
+        <div class="neon-inner">
+          <label for="quizSetInput">نام مجموعه (quiz_set) — خالی بذار برای «امشب»</label>
+          <input type="text" id="quizSetInput" placeholder="خالی = روتین شبانهٔ امروز (خودکار)" />
+
+          <label for="questionText">متن سؤال</label>
+          <textarea id="questionText" placeholder="متن سؤال رو بنویس... (فرمول‌ها رو با $...$ بذار)"></textarea>
+
+          <label>عکس سؤال (اختیاری)</label>
+          <div class="photo-area">
+            <div class="photo-preview" id="photoPreviewBox">بدون عکس</div>
+            <div style="flex:1;">
+              <input type="file" id="photoInput" accept="image/*" />
+              <button class="btn-ghost btn-small" id="clearPhotoBtn" style="margin-top:8px;">حذف عکس</button>
+            </div>
+          </div>
+
+          <label>گزینه‌ها</label>
+          <div class="options-grid">
+            <div class="option-row">
+              <div class="radio-cell"><input type="radio" name="correctOption" value="a" checked /> الف</div>
+              <input type="text" id="optionA" placeholder="گزینهٔ الف" />
+            </div>
+            <div class="option-row">
+              <div class="radio-cell"><input type="radio" name="correctOption" value="b" /> ب</div>
+              <input type="text" id="optionB" placeholder="گزینهٔ ب" />
+            </div>
+            <div class="option-row">
+              <div class="radio-cell"><input type="radio" name="correctOption" value="c" /> ج</div>
+              <input type="text" id="optionC" placeholder="گزینهٔ ج" />
+            </div>
+            <div class="option-row">
+              <div class="radio-cell"><input type="radio" name="correctOption" value="d" /> د</div>
+              <input type="text" id="optionD" placeholder="گزینهٔ د" />
+            </div>
+          </div>
+
+          <label for="explanationText">توضیح تشریحی</label>
+          <textarea id="explanationText" placeholder="پاسخ تشریحی..."></textarea>
+
+          <div class="row-2">
+            <div>
+              <label for="subjectSelect">درس</label>
+              <select id="subjectSelect"><option value="">در حال بارگذاری...</option></select>
+            </div>
+            <div>
+              <label for="topicSelect">مبحث</label>
+              <select id="topicSelect"><option value="">ابتدا درس را انتخاب کن</option></select>
+            </div>
+          </div>
+
+          <button class="btn-primary sticky-submit" id="submitBtn">ثبت سؤال</button>
+          <div id="formFeedback" class="feedback"></div>
+        </div>
+      </div>
+
+      <!-- ستون پیش‌نمایش -->
+      <div class="neon-border">
+        <div class="neon-inner">
+          <div class="preview-label">پیش‌نمایش (همانی که دانش‌آموز می‌بیند)</div>
+          <div class="preview-card">
+            <img id="previewPhoto" class="preview-photo" />
+            <div id="previewQuestionText" class="preview-question-text">متن سؤال اینجا نمایش داده می‌شود...</div>
+            <div class="preview-options" id="previewOptions"></div>
+            <div id="previewExplanation" class="preview-explanation"></div>
+            <div class="preview-meta" id="previewMeta"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------------------------------------------------------------
+  // تنظیمات: آدرس بیس API رو اینجا با آدرس واقعی سرور Flask جایگزین کن
+  // ---------------------------------------------------------------------
+  const API_BASE = window.ADMIN_API_BASE || "https://YOUR-SERVER-DOMAIN";
+  const TOKEN_STORAGE_KEY = "rahyar_konkur_admin_token";
+
+  const el = (id) => document.getElementById(id);
+
+  const loginView = el("loginView");
+  const mainView = el("mainView");
+  const tokenInput = el("tokenInput");
+  const loginBtn = el("loginBtn");
+  const loginFeedback = el("loginFeedback");
+  const logoutBtn = el("logoutBtn");
+
+  const quizSetInput = el("quizSetInput");
+  const questionText = el("questionText");
+  const photoInput = el("photoInput");
+  const photoPreviewBox = el("photoPreviewBox");
+  const clearPhotoBtn = el("clearPhotoBtn");
+  const optionInputs = { a: el("optionA"), b: el("optionB"), c: el("optionC"), d: el("optionD") };
+  const explanationText = el("explanationText");
+  const subjectSelect = el("subjectSelect");
+  const topicSelect = el("topicSelect");
+  const submitBtn = el("submitBtn");
+  const formFeedback = el("formFeedback");
+
+  const previewPhoto = el("previewPhoto");
+  const previewQuestionText = el("previewQuestionText");
+  const previewOptions = el("previewOptions");
+  const previewExplanation = el("previewExplanation");
+  const previewMeta = el("previewMeta");
+
+  let taxonomy = {};        // { درس: { پایه: [مبحث...] } }
+  let currentPhotoBase64 = null;
+
+  function showFeedback(node, type, message) {
+    node.textContent = message;
+    node.className = "feedback show " + type;
+  }
+
+  function hideFeedback(node) {
+    node.className = "feedback";
+  }
+
+  function defaultQuizSetName() {
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    return `nightly_${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+
+  // ---------------------------------------------------------------------
+  // ورود / خروج
+  // ---------------------------------------------------------------------
+
+  function getToken() {
+    return localStorage.getItem(TOKEN_STORAGE_KEY) || "";
+  }
+
+  function setToken(t) {
+    localStorage.setItem(TOKEN_STORAGE_KEY, t);
+  }
+
+  function clearToken() {
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+  }
+
+  async function apiFetch(path, options) {
+    options = options || {};
+    options.headers = Object.assign({}, options.headers, {
+      "X-Admin-Token": getToken(),
+    });
+    const resp = await fetch(API_BASE + path, options);
+    let data = null;
+    try { data = await resp.json(); } catch (e) { /* بدنه خالی یا غیر JSON */ }
+    if (resp.status === 401) {
+      throw new Error("UNAUTHORIZED");
+    }
+    if (!resp.ok) {
+      const msg = (data && data.error) ? data.error : `خطای سرور (${resp.status})`;
+      throw new Error(msg);
+    }
+    return data;
+  }
+
+  async function tryLogin(showUi) {
+    if (!getToken()) return false;
+    try {
+      const data = await apiFetch("/api/admin/taxonomy", { method: "GET" });
+      taxonomy = data.taxonomy || {};
+      populateSubjects();
+      loginView.style.display = "none";
+      mainView.style.display = "block";
+      return true;
+    } catch (err) {
+      if (showUi) {
+        showFeedback(loginFeedback, "err", err.message === "UNAUTHORIZED"
+          ? "توکن نادرست است."
+          : "خطا در اتصال به سرور: " + err.message);
+      }
+      clearToken();
+      loginView.style.display = "block";
+      mainView.style.display = "none";
+      return false;
+    }
+  }
+
+  loginBtn.addEventListener("click", async () => {
+    const t = tokenInput.value.trim();
+    if (!t) {
+      showFeedback(loginFeedback, "err", "توکن رو وارد کن.");
+      return;
+    }
+    setToken(t);
+    hideFeedback(loginFeedback);
+    loginBtn.disabled = true;
+    await tryLogin(true);
+    loginBtn.disabled = false;
+  });
+
+  logoutBtn.addEventListener("click", () => {
+    clearToken();
+    location.reload();
+  });
+
+  // ---------------------------------------------------------------------
+  // تاکسونومی درس/مبحث
+  // ---------------------------------------------------------------------
+
+  function populateSubjects() {
+    subjectSelect.innerHTML = '<option value="">— انتخاب درس —</option>';
+    Object.keys(taxonomy).forEach((subject) => {
+      const opt = document.createElement("option");
+      opt.value = subject;
+      opt.textContent = subject;
+      subjectSelect.appendChild(opt);
+    });
+    topicSelect.innerHTML = '<option value="">ابتدا درس را انتخاب کن</option>';
+  }
+
+  function populateTopics(subject) {
+    topicSelect.innerHTML = "";
+    if (!subject || !taxonomy[subject]) {
+      topicSelect.innerHTML = '<option value="">ابتدا درس را انتخاب کن</option>';
+      return;
+    }
+    const gradesObj = taxonomy[subject];
+    const allTopics = [];
+    Object.keys(gradesObj).forEach((grade) => {
+      (gradesObj[grade] || []).forEach((topic) => allTopics.push(topic));
+    });
+    const opt0 = document.createElement("option");
+    opt0.value = "";
+    opt0.textContent = "— انتخاب مبحث —";
+    topicSelect.appendChild(opt0);
+    allTopics.forEach((topic) => {
+      const opt = document.createElement("option");
+      opt.value = topic;
+      opt.textContent = topic;
+      topicSelect.appendChild(opt);
+    });
+  }
+
+  subjectSelect.addEventListener("change", () => {
+    populateTopics(subjectSelect.value);
+    updatePreview();
+  });
+
+  // ---------------------------------------------------------------------
+  // عکس
+  // ---------------------------------------------------------------------
+
+  photoInput.addEventListener("change", () => {
+    const file = photoInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result; // data:image/...;base64,XXXX
+      currentPhotoBase64 = result.split(",")[1] || null;
+      photoPreviewBox.innerHTML = `<img src="${result}" />`;
+      updatePreview();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  clearPhotoBtn.addEventListener("click", () => {
+    photoInput.value = "";
+    currentPhotoBase64 = null;
+    photoPreviewBox.innerHTML = "بدون عکس";
+    updatePreview();
+  });
+
+  // ---------------------------------------------------------------------
+  // پیش‌نمایش زنده
+  // ---------------------------------------------------------------------
+
+  function getCorrectLetter() {
+    const checked = document.querySelector('input[name="correctOption"]:checked');
+    return checked ? checked.value : "a";
+  }
+
+  const letterLabels = { a: "الف", b: "ب", c: "ج", d: "د" };
+
+  function updatePreview() {
+    previewQuestionText.textContent = questionText.value.trim() || "متن سؤال اینجا نمایش داده می‌شود...";
+
+    if (currentPhotoBase64) {
+      previewPhoto.src = "data:image/jpeg;base64," + currentPhotoBase64;
+      previewPhoto.style.display = "block";
+    } else {
+      previewPhoto.style.display = "none";
+    }
+
+    const correct = getCorrectLetter();
+    previewOptions.innerHTML = "";
+    Object.keys(optionInputs).forEach((letter) => {
+      const val = optionInputs[letter].value.trim();
+      if (!val) return;
+      const div = document.createElement("div");
+      div.className = "preview-option" + (letter === correct ? " correct" : "");
+      div.textContent = `${letterLabels[letter]}) ${val}`;
+      previewOptions.appendChild(div);
+    });
+
+    previewExplanation.textContent = explanationText.value.trim();
+
+    const subj = subjectSelect.value || "—";
+    const topic = topicSelect.value || "—";
+    previewMeta.textContent = `درس: ${subj}   |   مبحث: ${topic}`;
+
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise([document.querySelector(".preview-card")]).catch(() => {});
+    }
+  }
+
+  [questionText, explanationText, optionInputs.a, optionInputs.b, optionInputs.c, optionInputs.d]
+    .forEach((node) => node.addEventListener("input", updatePreview));
+  document.querySelectorAll('input[name="correctOption"]').forEach((r) =>
+    r.addEventListener("change", updatePreview)
+  );
+  topicSelect.addEventListener("change", updatePreview);
+
+  // ---------------------------------------------------------------------
+  // ارسال فرم
+  // ---------------------------------------------------------------------
+
+  function resetFormForNext() {
+    // درس/مبحث/مجموعه دست‌نخورده می‌مانند چون معمولاً ادمین پشت‌سرهم رو
+    // یه موضوع واحد کار می‌کنه؛ بقیه فیلدها خالی می‌شوند.
+    questionText.value = "";
+    optionInputs.a.value = "";
+    optionInputs.b.value = "";
+    optionInputs.c.value = "";
+    optionInputs.d.value = "";
+    explanationText.value = "";
+    document.querySelector('input[name="correctOption"][value="a"]').checked = true;
+    photoInput.value = "";
+    currentPhotoBase64 = null;
+    photoPreviewBox.innerHTML = "بدون عکس";
+    quizSetInput.placeholder = `خالی = ${defaultQuizSetName()} (خودکار، از سرور)`;  // تازه‌سازی در صورت رد شدن از نیمه‌شب
+    updatePreview();
+    questionText.focus();
+  }
+
+  submitBtn.addEventListener("click", async () => {
+    hideFeedback(formFeedback);
+
+    const payload = {
+      quiz_set: quizSetInput.value.trim(),
+      question_text: questionText.value.trim(),
+      photo_base64: currentPhotoBase64,
+      options: {
+        a: optionInputs.a.value.trim(),
+        b: optionInputs.b.value.trim(),
+        c: optionInputs.c.value.trim(),
+        d: optionInputs.d.value.trim(),
+      },
+      correct_option: getCorrectLetter(),
+      explanation: explanationText.value.trim(),
+      subject: subjectSelect.value,
+      topic: topicSelect.value,
+    };
+
+    if (!payload.question_text) {
+      showFeedback(formFeedback, "err", "متن سؤال نمی‌تواند خالی باشد.");
+      return;
+    }
+    const filledOptions = Object.values(payload.options).filter(Boolean).length;
+    if (filledOptions < 2) {
+      showFeedback(formFeedback, "err", "حداقل ۲ گزینه را پر کن.");
+      return;
+    }
+    if (!payload.options[payload.correct_option]) {
+      showFeedback(formFeedback, "err", "گزینهٔ درست انتخاب‌شده خالی است.");
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "در حال ارسال...";
+
+    try {
+      const data = await apiFetch("/api/admin/questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      showFeedback(formFeedback, "ok", `سؤال با موفقیت ثبت شد (شناسه: ${data.question_id}). فرم برای سؤال بعدی آماده است.`);
+      resetFormForNext();
+    } catch (err) {
+      if (err.message === "UNAUTHORIZED") {
+        showFeedback(formFeedback, "err", "توکن دیگر معتبر نیست. لطفاً دوباره وارد شو.");
+        clearToken();
+        setTimeout(() => location.reload(), 1500);
+      } else {
+        showFeedback(formFeedback, "err", "ثبت ناموفق بود: " + err.message);
+      }
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "ثبت سؤال";
+    }
+  });
+
+  // ---------------------------------------------------------------------
+  // شروع
+  // ---------------------------------------------------------------------
+
+  quizSetInput.placeholder = `خالی = ${defaultQuizSetName()} (خودکار، از سرور)`;
+  updatePreview();
+
+  if (getToken()) {
+    tryLogin(false);
+  }
+})();
+</script>
+
+</body>
+</html>
